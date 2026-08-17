@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #111827; /* Gray-900 for better contrast than pure black */
+  --gov-blue: #004b87; /* Standard authoritative blue */
+  --gov-blue-dark: #003366;
+  --gov-gray: #f3f4f6; /* Gray-100 */
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Inter, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Smooth transitions globally */
+* {
+  transition-property: color, background-color, border-color, box-shadow, transform, opacity;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* Highly visible focus ring for accessibility - Gov Standard */
+:focus {
+  outline: 3px solid #ffbf47; /* Standard yellow/orange focus used in gov.uk etc */
+  outline-offset: 0;
+  box-shadow: inset 0 0 0 2px #0b0c0c;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow: none;
+}
+
+:focus-visible {
+  outline: 4px solid #ffbf47 !important;
+  outline-offset: 0 !important;
+  box-shadow: inset 0 0 0 2px #0b0c0c !important;
+}
+
+/* Custom scrollbar - cleaner and less intrusive */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f8f9fa;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px; /* Less rounded */
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Leaflet z-index fix inside modals/overlays */
+.leaflet-pane {
+  z-index: 1 !important;
+}
+.leaflet-control {
+  z-index: 2 !important;
+}
+
+/* Animate in utility */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-in {
+  animation: fade-in 0.15s ease-out both;
+}
