@@ -49,7 +49,7 @@ export default function ReportPage() {
         setLat(parseFloat(data[0].lat));
         setLng(parseFloat(data[0].lon));
       } else {
-        alert(r.error || "Manzil topilmadi");
+        alert("Manzil topilmadi");
       }
     } catch (e) {
       console.error(e);
