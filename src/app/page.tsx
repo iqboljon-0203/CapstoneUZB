@@ -60,6 +60,7 @@ export default function HomePage() {
                   src="/hero-children.jpg"
                   alt="Government Portal"
                   fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-cover"
                   priority
                 />
@@ -142,6 +143,7 @@ export default function HomePage() {
                 src="/feature.png"
                 alt="Internal Affairs Ministry"
                 fill
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
