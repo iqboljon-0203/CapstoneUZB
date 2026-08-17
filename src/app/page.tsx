@@ -57,7 +57,7 @@ export default function HomePage() {
             <div className="w-full mt-8 lg:mt-0">
               <div className="relative rounded-lg overflow-hidden h-56 sm:h-72 lg:h-96 shadow-lg border border-gray-200">
                 <Image
-                  src="/hero.png"
+                  src="/hero-children.jpg"
                   alt="Government Portal"
                   fill
                   className="object-cover"
