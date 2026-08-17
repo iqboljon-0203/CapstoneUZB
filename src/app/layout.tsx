@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     siteName: "Hukumat Portali",
     images: [
       {
-        url: "https://bolalar-mehnati-kuzatuvi.uz/feature.png",
+        url: "https://bolalar-mehnati-kuzatuvi.uz/feature.jpg",
         width: 1200,
         height: 630,
         alt: "O'zbekiston Respublikasi Hukumat Portali",
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "O'zbekiston Respublikasi Hukumat Portali",
     description: "Huquqbuzarliklar haqida ishonchli tarzda xabar bering.",
-    images: ["https://bolalar-mehnati-kuzatuvi.uz/feature.png"],
+    images: ["https://bolalar-mehnati-kuzatuvi.uz/feature.jpg"],
   },
   robots: {
     index: true,

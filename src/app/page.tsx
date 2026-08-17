@@ -140,7 +140,7 @@ export default function HomePage() {
             {/* Right: official image */}
             <div className="relative rounded-lg overflow-hidden h-full min-h-[350px] shadow-md border border-gray-200">
               <Image
-                src="/feature.png"
+                src="/feature.jpg"
                 alt="Internal Affairs Ministry"
                 fill
                 sizes="(max-width: 768px) 100vw, 50vw"
