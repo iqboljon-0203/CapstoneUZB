@@ -12,6 +12,8 @@ import {
   Settings as SettingsIcon,
   ChevronDown,
   Globe,
+  Menu,
+  X,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
@@ -31,6 +33,7 @@ export default function AdminPage() {
   const a = t.admin;
   const [mapPeriod, setMapPeriod] = useState<MapPeriod>("day");
   const [activeNav, setActiveNav] = useState("dashboard");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
   const [reports, setReports] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -120,13 +123,31 @@ export default function AdminPage() {
   ];
 
   return (
-    <div className="flex h-screen bg-[#f0f4f8] overflow-hidden font-sans">
+    <div className="flex h-screen bg-[#f0f4f8] overflow-hidden font-sans relative">
+      {/* Mobile Sidebar Overlay */}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* ── Sidebar ───────────────────────────────────────────────────────── */}
-      <aside className="hidden lg:flex w-56 xl:w-64 bg-[#0D1B2A] flex-col flex-shrink-0">
+      <aside 
+        className={`
+          fixed lg:static inset-y-0 left-0 z-50 w-64 bg-[#0D1B2A] flex flex-col flex-shrink-0 transition-transform duration-300 ease-in-out
+          ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
+        `}
+      >
         {/* Brand */}
-        <div className="px-6 py-5 border-b border-white/10">
-          <p className="text-white font-extrabold text-lg leading-none">{a.brand}</p>
-          <p className="text-gray-400 text-xs mt-0.5">{a.brandSub}</p>
+        <div className="flex items-center justify-between px-6 py-5 border-b border-white/10">
+          <div>
+            <p className="text-white font-extrabold text-lg leading-none">{a.brand}</p>
+            <p className="text-gray-400 text-xs mt-0.5">{a.brandSub}</p>
+          </div>
+          <button className="lg:hidden text-white" onClick={() => setSidebarOpen(false)}>
+            <X className="w-5 h-5" />
+          </button>
         </div>
 
         {/* Nav */}
@@ -134,7 +155,10 @@ export default function AdminPage() {
           {navItems.map((item) => (
             <button
               key={item.id}
-              onClick={() => setActiveNav(item.id)}
+              onClick={() => {
+                setActiveNav(item.id);
+                if (window.innerWidth < 1024) setSidebarOpen(false);
+              }}
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 ${
                 activeNav === item.id
                   ? "bg-[#0D4C73] text-white"
@@ -172,11 +196,18 @@ export default function AdminPage() {
       </aside>
 
       {/* ── Main ──────────────────────────────────────────────────────────── */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden w-full">
         {/* Top bar */}
-        <header className="bg-white border-b border-gray-100 px-4 sm:px-6 py-3 flex items-center gap-4 flex-shrink-0">
+        <header className="bg-white border-b border-gray-100 px-4 sm:px-6 py-3 flex items-center gap-4 flex-shrink-0 w-full">
+          <button 
+            className="lg:hidden p-2 -ml-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+            onClick={() => setSidebarOpen(true)}
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+
           {/* Search */}
-          <div className="flex-1 max-w-md relative">
+          <div className="flex-1 max-w-md relative hidden sm:block">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
               type="text"
@@ -204,7 +235,7 @@ export default function AdminPage() {
               </div>
 
               {/* KPI Cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {kpiCards.map((card) => (
               <div
                 key={card.label}
@@ -229,8 +260,8 @@ export default function AdminPage() {
           {/* Map + Recent Reports */}
           <div className="grid lg:grid-cols-5 gap-5">
             {/* Map */}
-            <div className="lg:col-span-3 bg-white rounded-2xl shadow-sm overflow-hidden">
-              <div className="flex items-center justify-between p-4 border-b border-gray-100">
+            <div className="lg:col-span-3 bg-white rounded-2xl shadow-sm overflow-hidden flex flex-col">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border-b border-gray-100 gap-3">
                 <h2 className="font-bold text-[#0D1B2A] text-sm">{a.mapTitle}</h2>
                 <div className="flex gap-1">
                   {(["day", "week"] as MapPeriod[]).map((p) => (
@@ -248,12 +279,12 @@ export default function AdminPage() {
                   ))}
                 </div>
               </div>
-              <div className="relative h-[300px] md:h-[400px] bg-gray-50 rounded-2xl overflow-hidden border border-gray-100 shadow-sm z-0">
+              <div className="relative h-[250px] md:h-[400px] bg-gray-50 flex-1 overflow-hidden z-0">
                 <AdminMap reports={reports} />
                 {/* Legend */}
-                <div className="absolute bottom-3 right-3 bg-white/90 backdrop-blur-sm rounded-xl px-3 py-2 shadow-md border border-gray-100 text-xs">
-                  <p className="font-bold text-gray-700 mb-1.5">{a.mapLegendTitle}</p>
-                  <div className="space-y-1">
+                <div className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 bg-white/90 backdrop-blur-sm rounded-xl px-2 py-1.5 sm:px-3 sm:py-2 shadow-md border border-gray-100 text-[10px] sm:text-xs">
+                  <p className="font-bold text-gray-700 mb-1">{a.mapLegendTitle}</p>
+                  <div className="space-y-0.5 sm:space-y-1">
                     {[
                       { color: "bg-red-500", label: a.mapLegendHigh },
                       { color: "bg-purple-500", label: a.mapLegendMid },
