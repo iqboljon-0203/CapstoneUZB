@@ -41,7 +41,7 @@ export const translations = {
       feature1Title: "Anonimlik kafolatlanadi",
       feature1Desc:
         "Siz yuborgan ma'lumotlar qat'iy sir saqlanadi va faqat vakolatli organlar tomonidan ko'rib chiqiladi.",
-      feature2Title: "Tezkor reaktsiya",
+      feature2Title: "Tezkor reaksiya",
       feature2Desc:
         "Har bir xabar daxldor idoralarga darhol yo'naltiriladi va qonuniy choralar ko'riladi.",
     },
