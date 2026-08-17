@@ -22,12 +22,12 @@ export default function ProfilePage() {
     }
   }, [router]);
 
-  const fetchReports = async (telegramId: string) => {
+  const fetchReports = async (telegramId: string | number) => {
     setLoading(true);
     const { data, error } = await supabase
       .from("reports")
       .select("*")
-      .eq("telegram_user_id", telegramId)
+      .eq("telegram_user_id", telegramId.toString())
       .order("created_at", { ascending: false });
 
     if (error) {
