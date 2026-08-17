@@ -83,6 +83,31 @@ export default function ReportPage() {
       } catch (e) {}
     }
 
+    let image_url = null;
+
+    if (files && files.length > 0) {
+      const file = files[0];
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from("reports")
+        .upload(filePath, file);
+
+      if (uploadError) {
+        console.error("Error uploading image:", uploadError);
+        alert("Rasm yuklashda xatolik yuz berdi. Iltimos, qayta urinib ko'ring yoki rasmsiz yuboring.");
+        setSubmitting(false);
+        return;
+      } else {
+        const { data: publicUrlData } = supabase.storage
+          .from("reports")
+          .getPublicUrl(filePath);
+        image_url = publicUrlData.publicUrl;
+      }
+    }
+
     const { data, error } = await supabase.from("reports").insert([
       {
         telegram_user_id,
@@ -92,6 +117,7 @@ export default function ReportPage() {
         category: incidentType || "Boshqa",
         lat,
         lng,
+        image_url,
         status: "Yangi",
       },
     ]);
