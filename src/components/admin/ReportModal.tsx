@@ -1,6 +1,6 @@
 "use client";
 
-import { X, MapPin, Calendar, Tag, AlertCircle, Image as ImageIcon, Loader2 } from "lucide-react";
+import { X, MapPin, Calendar, Tag, AlertCircle, Image as ImageIcon, Loader2, Users, CheckCircle, Clock } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
@@ -10,6 +10,9 @@ const ReportModalMap = dynamic(() => import("./ReportModalMap"), { ssr: false })
 export default function ReportModal({ report, onClose }: { report: any, onClose: () => void }) {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState(report?.status || "Yangi");
+  const [assignedDistrict, setAssignedDistrict] = useState(report?.assigned_district || "");
+  const [acceptedByGroup, setAcceptedByGroup] = useState(report?.accepted_by_group || false);
+  const [assignedAt, setAssignedAt] = useState(report?.assigned_at || null);
 
   if (!report) return null;
 
@@ -17,6 +20,34 @@ export default function ReportModal({ report, onClose }: { report: any, onClose:
     setStatus(newStatus);
     setLoading(true);
     const { error } = await supabase.from('reports').update({ status: newStatus }).eq('id', report.id);
+    setLoading(false);
+    if (!error) {
+      window.location.reload();
+    } else {
+      alert("Xatolik yuz berdi");
+    }
+  };
+
+  const updateDistrict = async (newDistrict: string) => {
+    setAssignedDistrict(newDistrict);
+    setLoading(true);
+    const now = new Date().toISOString();
+    const { error } = await supabase.from('reports').update({ 
+      assigned_district: newDistrict,
+      assigned_at: now,
+      accepted_by_group: false
+    }).eq('id', report.id);
+    setLoading(false);
+    if (!error) {
+      window.location.reload();
+    } else {
+      alert("Xatolik yuz berdi");
+    }
+  };
+
+  const acceptReport = async () => {
+    setLoading(true);
+    const { error } = await supabase.from('reports').update({ accepted_by_group: true }).eq('id', report.id);
     setLoading(false);
     if (!error) {
       window.location.reload();
@@ -59,6 +90,24 @@ export default function ReportModal({ report, onClose }: { report: any, onClose:
               <AlertCircle className="w-4 h-4" />
               {status}
             </span>
+            {assignedDistrict && (
+              <span className="flex items-center gap-1.5 px-3 py-1.5 bg-purple-50 text-purple-700 rounded-lg text-sm font-semibold border border-purple-100">
+                <Users className="w-4 h-4" />
+                {assignedDistrict} ishchi guruhi
+              </span>
+            )}
+            {assignedDistrict && assignedAt && !acceptedByGroup && (
+              <span className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg text-sm font-semibold border border-blue-100">
+                <Clock className="w-4 h-4" />
+                Yuborildi: {new Date(assignedAt).toLocaleString("uz-UZ")}
+              </span>
+            )}
+            {assignedDistrict && acceptedByGroup && (
+              <span className="flex items-center gap-1.5 px-3 py-1.5 bg-green-50 text-green-700 rounded-lg text-sm font-semibold border border-green-100">
+                <CheckCircle className="w-4 h-4" />
+                Ishchi guruh qabul qildi
+              </span>
+            )}
           </div>
 
           <div>
@@ -96,7 +145,17 @@ export default function ReportModal({ report, onClose }: { report: any, onClose:
         </div>
 
         {/* Footer / Actions */}
-        <div className="p-4 sm:p-6 border-t border-gray-100 bg-gray-50/50 flex items-center justify-end gap-3">
+        <div className="p-4 sm:p-6 border-t border-gray-100 bg-gray-50/50 flex flex-wrap items-center justify-end gap-3">
+          {assignedDistrict && !acceptedByGroup && (
+            <button 
+              onClick={acceptReport}
+              disabled={loading}
+              className="px-5 py-2.5 bg-green-600 text-white font-medium rounded-xl hover:bg-green-700 transition-colors text-sm disabled:opacity-50 mr-auto"
+            >
+              Guruh nomidan qabul qilish
+            </button>
+          )}
+
           <button 
             onClick={onClose}
             disabled={loading}
@@ -104,6 +163,34 @@ export default function ReportModal({ report, onClose }: { report: any, onClose:
           >
             Yopish
           </button>
+          
+          <div className="relative">
+            <select
+              value={assignedDistrict}
+              onChange={(e) => updateDistrict(e.target.value)}
+              disabled={loading}
+              className="appearance-none pl-5 pr-10 py-2.5 bg-purple-600 text-white font-medium rounded-xl hover:bg-purple-700 transition-colors text-sm outline-none cursor-pointer disabled:opacity-70 disabled:cursor-wait"
+            >
+              <option value="" disabled>Tuman guruhiga biriktirish</option>
+              <option value="Bektemir">Bektemir</option>
+              <option value="Chilonzor">Chilonzor</option>
+              <option value="Mirobod">Mirobod</option>
+              <option value="Mirzo Ulug'bek">Mirzo Ulug'bek</option>
+              <option value="Olmazor">Olmazor</option>
+              <option value="Sergeli">Sergeli</option>
+              <option value="Shayxontohur">Shayxontohur</option>
+              <option value="Uchtepa">Uchtepa</option>
+              <option value="Yakkasaroy">Yakkasaroy</option>
+              <option value="Yangi hayot">Yangi hayot</option>
+              <option value="Yashnobod">Yashnobod</option>
+              <option value="Yunusobod">Yunusobod</option>
+            </select>
+            {loading ? (
+              <Loader2 className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-white animate-spin pointer-events-none" />
+            ) : (
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-white text-xs">▼</div>
+            )}
+          </div>
           
           <div className="relative">
             <select
