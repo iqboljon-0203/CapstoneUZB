@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { 
   Users, MapPin, Calendar, Tag, AlertCircle, Image as ImageIcon, 
-  CheckCircle, Clock, Loader2, X, Activity, LayoutDashboard
+  CheckCircle, Clock, Loader2, X, Activity, LayoutDashboard, ArrowLeft
 } from "lucide-react";
 import dynamic from "next/dynamic";
 
@@ -134,9 +134,10 @@ function WorkerReportModal({ report, onClose }: { report: any, onClose: () => vo
           <button 
             onClick={onClose}
             disabled={loading}
-            className="px-5 py-2.5 bg-white border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors text-sm disabled:opacity-50"
+            className="px-5 py-2.5 bg-white border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors text-sm disabled:opacity-50 flex items-center gap-2"
           >
-            Yopish
+            <ArrowLeft className="w-4 h-4" />
+            Orqaga
           </button>
           
           <div className="relative">
@@ -216,7 +217,12 @@ export default function WorkerDashboard() {
     return (
       <div className="min-h-screen bg-[#f3f4f6] flex items-center justify-center p-4">
         <div className="bg-white border-t-4 border-[#0D4C73] border border-gray-300 w-full max-w-2xl p-8 sm:p-10 shadow-md relative overflow-hidden">
-          <div className="flex justify-center mb-6 relative z-10">
+          <div className="absolute top-4 left-4">
+            <a href="/" className="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-[#0D4C73] transition-colors">
+              <ArrowLeft className="w-4 h-4" /> Bosh sahifaga qaytish
+            </a>
+          </div>
+          <div className="flex justify-center mb-6 mt-4 relative z-10">
             <div className="w-16 h-16 bg-blue-50 border border-blue-100 rounded-full flex items-center justify-center">
               <Users className="w-8 h-8 text-[#0D4C73]" />
             </div>
@@ -276,7 +282,12 @@ export default function WorkerDashboard() {
             <h1 className="text-xl font-bold text-gray-900">{selectedDistrict} tumaniga kelib tushgan arizalar</h1>
             <p className="text-sm text-gray-500">Bu yerda sizga admin tomonidan yo'naltirilgan ishlarni ko'rasiz.</p>
           </div>
-          <button className="lg:hidden text-sm font-semibold text-[#004b87]" onClick={handleLogout}>Chiqish</button>
+          <div className="flex items-center gap-3">
+            <a href="/" className="hidden sm:flex items-center gap-2 text-sm font-semibold text-gray-500 hover:text-[#004b87] transition-colors">
+              <ArrowLeft className="w-4 h-4" /> Bosh sahifa
+            </a>
+            <button className="text-sm font-semibold text-red-500 hover:text-red-700 transition-colors" onClick={handleLogout}>Chiqish</button>
+          </div>
         </header>
 
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5">
