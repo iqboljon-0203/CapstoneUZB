@@ -13,6 +13,7 @@ export default function ReportModal({ report, onClose }: { report: any, onClose:
   const [assignedDistrict, setAssignedDistrict] = useState(report?.assigned_district || "");
   const [acceptedByGroup, setAcceptedByGroup] = useState(report?.accepted_by_group || false);
   const [assignedAt, setAssignedAt] = useState(report?.assigned_at || null);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   if (!report) return null;
 
@@ -39,7 +40,10 @@ export default function ReportModal({ report, onClose }: { report: any, onClose:
     }).eq('id', report.id);
     setLoading(false);
     if (!error) {
-      window.location.reload();
+      setShowSuccess(true);
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
     } else {
       alert("Xatolik yuz berdi");
     }
@@ -57,8 +61,20 @@ export default function ReportModal({ report, onClose }: { report: any, onClose:
   };
 
   return (
-    <div className="fixed inset-0 z-[500] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col animate-in fade-in zoom-in duration-200">
+    <>
+      {showSuccess && (
+        <div className="fixed inset-0 z-[600] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm p-8 text-center flex flex-col items-center animate-in zoom-in duration-300">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+              <CheckCircle className="w-8 h-8 text-green-600" />
+            </div>
+            <h2 className="text-xl font-bold text-gray-900 mb-2">Muvaffaqiyatli!</h2>
+            <p className="text-gray-500">Ariza <b>{assignedDistrict}</b> tuman ishchi guruhiga yuborildi.</p>
+          </div>
+        </div>
+      )}
+      <div className="fixed inset-0 z-[500] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+        <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col animate-in fade-in zoom-in duration-200">
         
         {/* Header */}
         <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-100 bg-gray-50/50">
@@ -213,6 +229,6 @@ export default function ReportModal({ report, onClose }: { report: any, onClose:
         </div>
 
       </div>
-    </div>
+    </>
   );
 }
